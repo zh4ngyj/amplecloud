@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: product-service
+        url: /api/product-service/v3/api-docs
+      - name: order-service
+        url: /api/order-service/v3/api-docs
+
+logging:
+  level:
+    com.example.apigateway: INFO
+
+zuul:
+  prefix: /api
+  ignored-services: '*'
+  routes:
+    product-service:
+      path: /products/**
+      serviceId: product-service
+      stripPrefix: false
+    order-service:
+      path: /orders/**
+      serviceId: order-service
+      stripPrefix: false
+    product-docs:
+      path: /product-service/**
+      serviceId: product-service
+    order-docs:
+      path: /order-service/**
+      serviceId: order-service
+  host:
+    connect-timeout-millis: 2000
+    socket-timeout-millis: 4000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+ribbon:
+  ConnectTimeout: 1000
+  ReadTimeout: 3000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 4000
