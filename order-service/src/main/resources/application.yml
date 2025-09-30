@@ -16,7 +16,7 @@ springdoc:
     path: /swagger-ui.html
 
 feign:
-  hystrix:
+  circuitbreaker:
     enabled: true
 
 logging:

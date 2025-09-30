@@ -1,58 +1,25 @@
 package com.example.apigateway.fallback;
 
-import org.springframework.cloud.netflix.zuul.filters.route.FallbackProvider;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Map;
 
-@Component
-public class GlobalFallbackProvider implements FallbackProvider {
+@RestController
+@RequestMapping("/fallback")
+public class GlobalFallbackProvider {
 
-    @Override
-    public String getRoute() {
-        return "*";
-    }
-
-    @Override
-    public ClientHttpResponse fallbackResponse(String route, Throwable cause) {
-        return new ClientHttpResponse() {
-            @Override
-            public HttpStatus getStatusCode() throws IOException {
-                return HttpStatus.SERVICE_UNAVAILABLE;
-            }
-
-            @Override
-            public int getRawStatusCode() throws IOException {
-                return HttpStatus.SERVICE_UNAVAILABLE.value();
-            }
-
-            @Override
-            public String getStatusText() throws IOException {
-                return HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase();
-            }
-
-            @Override
-            public void close() {
-            }
-
-            @Override
-            public InputStream getBody() throws IOException {
-                String message = String.format("{\"message\":\"Service %s is unavailable\"}", route);
-                return new ByteArrayInputStream(message.getBytes());
-            }
-
-            @Override
-            public HttpHeaders getHeaders() {
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                return headers;
-            }
-        };
+    @GetMapping(value = "/{serviceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Map<String, String>>> fallback(@PathVariable String serviceId) {
+        Map<String, String> body = Map.of(
+                "message", String.format("Service %s is unavailable", serviceId)
+        );
+        return Mono.just(ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(body));
     }
 }
