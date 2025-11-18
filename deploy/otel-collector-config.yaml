@@ -12,8 +12,8 @@ processors:
 exporters:
   logging:
     loglevel: info
-  jaeger:
-    endpoint: http://jaeger:14268/api/traces
+  otlphttp/jaeger:
+    endpoint: http://jaeger:4318
     tls:
       insecure: true
 
@@ -22,7 +22,7 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [jaeger, logging]
+      exporters: [otlphttp/jaeger, logging]
     metrics:
       receivers: [otlp]
       processors: [batch]

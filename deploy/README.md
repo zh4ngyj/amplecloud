@@ -66,6 +66,7 @@ SERVICE_VERSION=0.1 docker compose -f deploy/docker-compose.yml up --build -d
 - `SERVICE_VERSION`：控制 Compose 构建时使用的 JAR 版本与镜像 tag，需与 `pom.xml` 中 `<version>` 保持一致。
 - `OTEL_EXPORTER_OTLP_ENDPOINT`、`OTEL_ENVIRONMENT` 等变量在 Dockerfile 中已有默认值，必要时可通过 Compose `environment` 或 `.env` 覆盖。
 - `OTEL_EXPORTER_OTLP_PROTOCOL` 默认为 `grpc`，如果 Collector 仅开放 HTTP/Protobuf（4318），请改为 `http/protobuf` 并同时调整 `OTEL_EXPORTER_OTLP_ENDPOINT`。
+- OTEL Collector 通过 `otlphttp` exporter 将 traces 转发到 Jaeger（`http://jaeger:4318`），若要对接其他后端，只需在 `deploy/otel-collector-config.yaml` 中替换 exporter 即可。
 - 若需要推送镜像到私有仓库，可在 Compose 的 `image` 字段中修改组织名称或仓库地址。
 
 ## OTEL Collector
