@@ -3,6 +3,7 @@ version: "3.9"
 x-otel-env: &otel-env
   OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
   OTEL_ENVIRONMENT: dev
+  OTEL_EXPORTER_OTLP_PROTOCOL: grpc
 
 x-common-env: &default-service-env
   <<: *otel-env
@@ -70,6 +71,7 @@ services:
       <<: *default-service-env
     depends_on:
       - eureka-server
+      - otel-collector
     networks:
       - microservices
     restart: unless-stopped
@@ -89,6 +91,7 @@ services:
       <<: *default-service-env
     depends_on:
       - eureka-server
+      - otel-collector
     networks:
       - microservices
     restart: unless-stopped
@@ -110,6 +113,7 @@ services:
       - eureka-server
       - product-service
       - order-service
+      - otel-collector
     networks:
       - microservices
     restart: unless-stopped
