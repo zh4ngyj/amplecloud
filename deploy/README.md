@@ -41,6 +41,7 @@
    - API Gateway：`http://localhost:8080`
    - Swagger 聚合：`http://localhost:8080/swagger-ui.html`
    - Jaeger UI：`http://localhost:16686`
+   - 调试 Trace：对 `http://localhost:8080/api/products` 发起请求可以在响应头看到 `X-Trace-Id`，其值与 Jaeger 中的 Trace ID 一致。
 
 ## 手动运行（无需脚本）
 

@@ -63,9 +63,32 @@
 
 - `order-service` 启用 `feign.circuitbreaker.enabled=true`，并通过 `ProductClientFallback` 提供降级响应。
 - `api-gateway` 配置全局 `CircuitBreaker` 过滤器，当目标服务不可用时转发至 `/fallback/{serviceId}` 返回统一 JSON。
+- `api-gateway` 会在每个响应中追加 `X-Trace-Id` 头部，内容为当前 OpenTelemetry Trace ID，方便调用方将结果与 Jaeger 链路关联。
 - 所有服务均注册至 Eureka，并开放 Actuator 监控端点以便排查。
 - 通过 Springdoc OpenAPI 自动生成接口文档，便于调试与演示。
 - 各服务新增 `logback-spring.xml`，日志模式包含 `traceId/spanId`，便于后续接入 ELK、Jaeger 等观测平台。
+
+## 如何在代码里打印日志
+
+Spring Boot 默认集成 SLF4J + Logback，本项目在每个模块的 `logback-spring.xml` 中已经定义了统一模式：
+
+```text
+%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level ${appName:-app} - traceId=%X{trace_id:-} spanId=%X{span_id:-} %logger{36} - %msg%n
+```
+
+因此只需在代码里使用 `Logger` 打印日志，就能看到随 OpenTelemetry 传入的 trace/span Id。示例（已在 `product-service` 与 `order-service` 中生效）：
+
+```java
+private static final Logger log = LoggerFactory.getLogger(ProductController.class);
+
+@GetMapping
+public List<Product> findAll() {
+   log.info("Listing all products");
+   return productCatalog.findAll();
+}
+```
+
+若已在 `common-dependencies` 引入 Lombok，也可以改用 `@Slf4j` 以减少模板代码；无论哪种方式，日志内容都会自动出现在容器的 STDOUT，且同一个请求会共享同个 `traceId`，方便在 Jaeger 中交叉排查。此外，经由 API Gateway 的请求还会额外返回 `X-Trace-Id` 头部，便于前端或调用方保存日志索引。
 
 ## 后续可扩展方向
 
