@@ -77,3 +77,4 @@ SERVICE_VERSION=0.1 docker compose -f deploy/docker-compose.yml up --build -d
 2. **Windows 无法执行 `.sh` 文件**：使用 WSL、Git Bash 或直接参考“手动运行”命令。
 3. **端口被占用**：停止同端口的本地服务，或在 `docker-compose.yml` 中修改 `ports` 映射。
 4. **镜像构建失败**：确保 `mvn clean package` 生成了 `target/<module>-<version>.jar`，并且通过 Compose 传入的 `SERVICE`/`SERVICE_VERSION` 与 `deploy/docker/Dockerfile.service` 中的 `ARG` 设置匹配。
+5. **OTEL endpoint 变量未生效**：镜像入口脚本 `deploy/docker/entrypoint.sh` 会在容器启动时读取 `OTEL_EXPORTER_OTLP_ENDPOINT` 等环境变量，若自定义 Collector 地址，记得在 Compose 的 `environment` 区块或 `.env` 中覆盖，而不是直接修改 Dockerfile。

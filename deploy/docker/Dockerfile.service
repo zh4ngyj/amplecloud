@@ -16,11 +16,8 @@ COPY otel/opentelemetry-javaagent.jar opentelemetry-javaagent.jar
 # Application Jar
 COPY ${SERVICE}/target/${SERVICE}-${VERSION}.jar /app/app.jar
 
-ENTRYPOINT ["java", \
-  "-javaagent:/app/opentelemetry-javaagent.jar", \
-  "-Dotel.service.name=${SERVICE_NAME}", \
-  "-Dotel.exporter.otlp.endpoint=${OTEL_EXPORTER_OTLP_ENDPOINT}", \
-  "-Dotel.resource.attributes=deployment.environment=${OTEL_ENVIRONMENT},service.version=${SERVICE_VERSION}", \
-  "-Dotel.traces.sampler=parentbased_traceidratio", \
-  "-Dotel.traces.sampler.arg=0.1", \
-  "-jar","/app/app.jar"]
+# Entrypoint script handles runtime env expansion
+COPY deploy/docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
