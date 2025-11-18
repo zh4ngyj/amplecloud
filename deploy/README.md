@@ -1,14 +1,14 @@
 # 部署指引
 
-该目录包含基于 Docker 的一键部署资产，可将 `eureka-server`、`api-gateway`、`order-service`、`product-service` 以及 OTEL Collector 一次性构建并启动。
+该目录包含基于 Docker 的一键部署资产，可将 `eureka-server`、`api-gateway`、`order-service`、`product-service`、OTEL Collector 以及 Jaeger 一次性构建并启动。
 
 ## 目录结构
 
 | 路径 | 说明 |
 | --- | --- |
 | `docker/` | `Dockerfile.service` 为通用镜像模板，通过 `SERVICE`/`VERSION` Build Args 构建任意微服务，且已预置 OTEL Java Agent |
-| `docker-compose.yml` | 统一编排全部容器的 Compose 文件 |
-| `otel-collector-config.yaml` | 轻量级 OTEL Collector 配置，默认输出到日志 |
+| `docker-compose.yml` | 统一编排全部容器（含 Jaeger）的 Compose 文件 |
+| `otel-collector-config.yaml` | 轻量级 OTEL Collector 配置，默认同时导出到 Jaeger 与日志 |
 | `deploy.sh` | Bash 脚本，负责 `mvn clean package` + `docker compose up --build -d` |
 | `dev/`、`prod/` | 预留环境配置目录，可根据需要扩展 |
 
@@ -16,7 +16,7 @@
 
 - Docker 24+，并启用 Docker Compose（插件 v2 或 `docker-compose` 命令均可）
 - Maven 3.6+ 与 JDK 21（用于构建可执行 JAR）
-- 端口未被占用：`8080/8081/8082/8761/4317/4318`
+- 端口未被占用：`8080/8081/8082/8761/4317/4318/16686/14268/14250`
 - 终端环境支持 Bash（macOS / Linux / WSL / Git Bash）。Windows 原生 PowerShell 可直接执行 Compose 命令，脚本需在 Bash 环境运行。
 
 ## 快速开始
@@ -34,12 +34,13 @@
    脚本会：
    - 运行 `mvn clean package -DskipTests`
    - 构建各服务镜像（复用 `deploy/docker/Dockerfile.service` 模板）
-   - 用 `docker compose` 启动所有容器
+   - 用 `docker compose` 启动所有容器（包含 Jaeger 与 OTEL Collector）
 
 3. **验证**
    - Eureka 控制台：`http://localhost:8761`
    - API Gateway：`http://localhost:8080`
    - Swagger 聚合：`http://localhost:8080/swagger-ui.html`
+   - Jaeger UI：`http://localhost:16686`
 
 ## 手动运行（无需脚本）
 
@@ -56,6 +57,7 @@ SERVICE_VERSION=0.1 docker compose -f deploy/docker-compose.yml up --build -d
 | --- | --- |
 | 查看容器状态 | `docker compose -f deploy/docker-compose.yml ps` |
 | 查看网关日志 | `docker compose -f deploy/docker-compose.yml logs -f api-gateway` |
+| 查看 Jaeger Collector 日志 | `docker compose -f deploy/docker-compose.yml logs -f jaeger` |
 | 停止并清理 | `docker compose -f deploy/docker-compose.yml down` |
 | 只重建某服务 | `docker compose -f deploy/docker-compose.yml up --build -d product-service` |
 
