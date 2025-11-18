@@ -1,0 +1,26 @@
+FROM openjdk:21-jdk-slim
+
+ARG VERSION=0.1
+ARG SERVICE=api-gateway
+
+ENV SERVICE_NAME=${SERVICE} \
+    SERVICE_VERSION=${VERSION} \
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317 \
+    OTEL_ENVIRONMENT=dev
+
+WORKDIR /app
+
+# OTEL Agent
+COPY otel/opentelemetry-javaagent.jar opentelemetry-javaagent.jar
+
+# Application Jar
+COPY ${SERVICE}/target/${SERVICE}-${VERSION}.jar /app/app.jar
+
+ENTRYPOINT ["java", \
+  "-javaagent:/app/opentelemetry-javaagent.jar", \
+  "-Dotel.service.name=${SERVICE_NAME}", \
+  "-Dotel.exporter.otlp.endpoint=${OTEL_EXPORTER_OTLP_ENDPOINT}", \
+  "-Dotel.resource.attributes=deployment.environment=${OTEL_ENVIRONMENT},service.version=${SERVICE_VERSION}", \
+  "-Dotel.traces.sampler=parentbased_traceidratio", \
+  "-Dotel.traces.sampler.arg=0.1", \
+  "-jar","/app/app.jar"]
