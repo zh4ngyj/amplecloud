@@ -65,6 +65,7 @@
 - `api-gateway` 配置全局 `CircuitBreaker` 过滤器，当目标服务不可用时转发至 `/fallback/{serviceId}` 返回统一 JSON。
 - 所有服务均注册至 Eureka，并开放 Actuator 监控端点以便排查。
 - 通过 Springdoc OpenAPI 自动生成接口文档，便于调试与演示。
+- 各服务新增 `logback-spring.xml`，日志模式包含 `traceId/spanId`，便于后续接入 ELK、Jaeger 等观测平台。
 
 ## 后续可扩展方向
 
