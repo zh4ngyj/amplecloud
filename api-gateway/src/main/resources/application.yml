@@ -37,13 +37,13 @@ spring:
           predicates:
             - Path=/api/product-service/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=2
         - id: order-docs
           uri: lb://order-service
           predicates:
             - Path=/api/order-service/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=2
       discovery:
         locator:
           enabled: true
