@@ -92,6 +92,15 @@ public List<Product> findAll() {
 
 ## 后续可扩展方向
 
+- **提高数据库并发能力**
+
+- **消息削峰、解耦**
+
+- **接入AI能力**
+    - 专用模型：计算机视觉CV、语音处理、决策与分类
+    - 生成式模型：大语言LLM、多模态LMM、文成图、视频模型、物理世界模型
+    - 模型应用：ASR, TTS, OCR, RAG
+
 - **集成 Spring Cloud Config 统一配置中心**
    - 新增 `config-server` 模块，引入 `spring-cloud-config-server` 并启用 `@EnableConfigServer`。
    - 在 Git 仓库或文件系统中维护共享配置，如 `product-service.yml`、`order-service.yml` 等。
@@ -102,14 +111,5 @@ public List<Product> findAll() {
    - 各服务加入 `micrometer-registry-prometheus`，并在 Actuator 中暴露 `/actuator/prometheus`。
    - 利用 Resilience4j 提供的 Micrometer 指标观测断路器状态、重试次数等。
    - 使用 Grafana 仪表盘直观展示请求成功率、失败率以及延迟趋势。
-
-- **提高数据库并发能力**
-
-- **消息削峰、解耦**
-
-- **接入AI能力**
-  - 专用模型：计算机视觉CV、语音处理、决策与分类
-  - 生成式模型：大语言LLM、多模态LMM、文成图、视频模型、物理世界模型
-  - 模型应用：ASR, TTS, OCR, RAG
 
 - **日志中心**
