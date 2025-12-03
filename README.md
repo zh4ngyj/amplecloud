@@ -98,12 +98,16 @@ public List<Product> findAll() {
    - 客户端（现有服务）加入 `spring-cloud-starter-config`，在 `bootstrap.yml` 配置 `spring.cloud.config.uri` 并启用 `failFast`/`retry`。
    - 可选添加消息总线（如 RabbitMQ）以支持 `POST /actuator/busrefresh` 热刷新。
 
-- **引入 Spring Cloud Sleuth + Zipkin 做链路追踪**
-   - 所有服务添加依赖 `spring-cloud-starter-sleuth` 以及（任选其一）`spring-cloud-sleuth-zipkin` 或 `zipkin-server`。
-   - Zipkin Server 可单独起一个模块，或使用官方 Docker 镜像 `openzipkin/zipkin`。
-   - 通过 Sleuth 自动注入的 `traceId`、`spanId` 关联跨服务调用，可在 Zipkin UI（默认 `http://localhost:9411`）查看链路拓扑与耗时。
+- **引入 OTEL agent + Jaeger 全链路追踪和统计**
+    - 接入 OTEL agent 无代码侵入，OpenTelemetry 是 CNCF 标准，支持几乎所有主流语言。
+    - Jaeger 提供更丰富的UI视图,可进行性能分析
 
 - **接入 Micrometer + Prometheus/Grafana 监控链路与熔断指标**
    - 各服务加入 `micrometer-registry-prometheus`，并在 Actuator 中暴露 `/actuator/prometheus`。
    - 利用 Resilience4j 提供的 Micrometer 指标观测断路器状态、重试次数等。
    - 使用 Grafana 仪表盘直观展示请求成功率、失败率以及延迟趋势。
+
+- **提高数据库并发能力**
+- **消息削峰、解耦**
+- **日志中心**
+- **接入AI能力:小模型（语音、视觉、分类）、大模型、RAG**
