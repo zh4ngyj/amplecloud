@@ -98,16 +98,18 @@ public List<Product> findAll() {
    - 客户端（现有服务）加入 `spring-cloud-starter-config`，在 `bootstrap.yml` 配置 `spring.cloud.config.uri` 并启用 `failFast`/`retry`。
    - 可选添加消息总线（如 RabbitMQ）以支持 `POST /actuator/busrefresh` 热刷新。
 
-- **引入 OTEL agent + Jaeger 全链路追踪和统计**
-    - 接入 OTEL agent 无代码侵入，OpenTelemetry 是 CNCF 标准，支持几乎所有主流语言。
-    - Jaeger 提供更丰富的UI视图,可进行性能分析
-
 - **接入 Micrometer + Prometheus/Grafana 监控链路与熔断指标**
    - 各服务加入 `micrometer-registry-prometheus`，并在 Actuator 中暴露 `/actuator/prometheus`。
    - 利用 Resilience4j 提供的 Micrometer 指标观测断路器状态、重试次数等。
    - 使用 Grafana 仪表盘直观展示请求成功率、失败率以及延迟趋势。
 
 - **提高数据库并发能力**
+
 - **消息削峰、解耦**
+
+- **接入AI能力**
+  - 专用模型：计算机视觉CV、语音处理、决策与分类
+  - 生成式模型：大语言LLM、多模态LMM、文成图、视频模型、物理世界模型
+  - 模型应用：ASR, TTS, OCR, RAG
+
 - **日志中心**
-- **接入AI能力:小模型（语音、视觉、分类）、大模型、RAG**
