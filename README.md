@@ -1,6 +1,6 @@
 # Spring Cloud Netflix Demo
 
-该示例演示了基于 Spring Boot 3.2.x 和 Spring Cloud 2023.0.x 的微服务组合，涵盖以下特性：
+该示例演示了基于 Spring Boot 3.5.x 和 Spring Cloud 2025.0.x 的微服务组合（已升级以适配 Java 25），涵盖以下特性：
 
 - **Eureka** 注册中心
 - **Spring Cloud Gateway** API 网关
@@ -19,8 +19,10 @@
 
 ## 运行要求
 
-- JDK 21+
-- Maven 3.6+
+- JDK 25+
+- Maven 3.9+
+
+> 提示：如果执行 `mvn` 时出现类似 “无效的目标发行版: 25”，通常是因为 **Maven 正在使用较旧的 JDK（例如 JDK 8/17/21）运行**。请确保 `JAVA_HOME` 指向 JDK 25，且 `java -version` / `mvn -version` 输出为 Java 25。
 
 ## 快速开始
 
